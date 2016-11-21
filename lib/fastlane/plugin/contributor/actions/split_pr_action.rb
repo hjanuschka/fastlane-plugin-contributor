@@ -24,16 +24,16 @@ module Fastlane
           created_branches << m_branch
           do_command("git checkout -B #{m_branch}")
           # unstage all
-          `git reset`
+          do_command("git reset")
           other_action.git_add(path: "#{File.expand_path(m)}/")
-          `git commit -m "Split PR commit"`
+          do_command("git commit -m 'Split PR commit'")
           other_action.push_to_git_remote(force: true)
           
 
           git_remote=`git remote get-url origin`.gsub!("git@github.com:", "https://github.com/").gsub!(".git", "").chomp
           subject = "[#{m}] New PR #{idx}/#{seperated_prs.length}"
           body = "This is #{idx}/#{seperated_prs.length}"
-          `open "#{git_remote}/compare/#{m_branch}?expand=1&body=#{URI.escape(body)}&title=#{URI.escape(subject)}"`
+          do_command("open '#{git_remote}/compare/#{m_branch}?expand=1&body=#{URI.escape(body)}&title=#{URI.escape(subject)}'")
           do_command("git checkout #{current_branch}")
           do_command("git reset --hard #{current_branch}")
         end
