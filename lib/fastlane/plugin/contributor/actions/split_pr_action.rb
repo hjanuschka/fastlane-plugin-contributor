@@ -5,10 +5,47 @@ module Fastlane
         # ensure git status is clean
         other_action.ensure_git_status_clean
         UI.important("Resetting to #{params[:base_branch]}")
-        FastlaneCore::CommandExecutor.execute(command: "git reset --soft #{params[:base_branch]}",
+        FastlaneCore::CommandExecutor.execute(command: "git reset #{params[:base_branch]}",
                                           print_all: true,
                                       print_command: true
                                               )
+
+        seperated_prs = []
+        `git status -u -s --porcelain`.split("\n").each do | l |
+          entry = l.split(" ")
+          file_name = entry[1]
+          module_info = file_name.split("/")
+          mod = module_info.first
+          seperated_prs << mod
+        end
+        
+        current_branch=other_action.git_branch
+        
+        created_branches = []
+        seperated_prs.each do | m, idx |
+          m_branch = "#{current_branch}_#{m}"
+          created_branches << m_branch
+          FastlaneCore::CommandExecutor.execute(command: "git checkout -B #{m_branch}",
+                                            print_all: true,
+                                        print_command: true
+                    
+                                                )
+                                                # unstage all
+          `git reset`
+          other_action.git_add(path: "#{File.expand_path(m)}/")
+          `git commit -m "Split PR commit"`
+          other_action.push_to_git_remote(force: true)
+          FastlaneCore::CommandExecutor.execute(command: "git checkout #{current_branch}",
+                                              print_all: true,
+                                          print_command: true)
+
+          git_remote=`git remote get-url origin`.gsub!("git@github.com:", "https://github.com/").gsub!(".git", "").chomp
+          subject = "[#{m}] New PR #{idx}/#{seperated_prs.length}"
+          body = "This is #{idx}/#{seperated_prs.length}"
+          `open "#{git_remote}/compare/#{m_branch}?expand=1&body=#{URI.escape(body)}&title=#{URI.escape(subject)}"`
+        end
+        
+        `git merge --ff #{created_branches.join(" ")}`
         
       end
 
