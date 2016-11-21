@@ -9,8 +9,14 @@ module Fastlane
   end
 end
 
+
+require 'fastlane'
 # By default we want to import all available actions and helpers
 # A plugin can contain any number of actions and plugins
 Fastlane::Contributor.all_classes.each do |current|
   require current
 end
+
+require 'fastlane/plugin/contributor/options'
+require 'fastlane/plugin/contributor/runner'
+require 'fastlane/plugin/contributor/commands_generator'

@@ -7,13 +7,13 @@ Gem::Specification.new do |spec|
   spec.name          = 'fastlane-plugin-contributor'
   spec.version       = Fastlane::Contributor::VERSION
   spec.author        = %q{Helmut Januschka}
-  spec.email         = %q{h.januschka@krone.at}
+  spec.email         = %q{helmut@januschka.com}
 
   spec.summary       = %q{a}
   # spec.homepage      = "https://github.com/<GITHUB_USERNAME>/fastlane-plugin-contributor"
   spec.license       = "MIT"
 
-  spec.files         = Dir["lib/**/*"] + %w(README.md LICENSE)
+  spec.files         = Dir["lib/**/*"] + %w(bin/fastlane-contributor README.md LICENSE)
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ['lib']
 

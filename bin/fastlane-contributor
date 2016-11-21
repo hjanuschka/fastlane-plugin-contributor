@@ -1,0 +1,8 @@
+#!/usr/bin/env ruby
+$:.push File.expand_path("../../lib", __FILE__)
+
+require 'fastlane'
+require 'fastlane/plugin/contributor'
+
+Fastlane.load_actions
+Fastlane::Contributor::CommandsGenerator.start

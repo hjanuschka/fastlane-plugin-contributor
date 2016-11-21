@@ -3,7 +3,7 @@ module Fastlane
     class SplitPrAction < Action
       def self.run(params)
         # ensure git status is clean
-        other_action.ensure_git_status_clean
+        Fastlane::Actions::EnsureGitStatusCleanAction.run({})
         UI.important("Resetting to #{params[:base_branch]}")
         do_command("git reset #{params[:base_branch]}")
 
@@ -16,7 +16,7 @@ module Fastlane
           seperated_prs << mod
         end
         
-        current_branch=other_action.git_branch
+        current_branch=Fastlane::Actions::GitBranchAction.run
         
         created_branches = []
         seperated_prs.each do | m, idx |
@@ -25,9 +25,9 @@ module Fastlane
           do_command("git checkout -B #{m_branch}")
           # unstage all
           do_command("git reset")
-          other_action.git_add(path: "#{File.expand_path(m)}/")
+          Fastlane::Actions::GitAddAction.run(path: "#{File.expand_path(m)}/")
           do_command("git commit -m 'Split PR commit'")
-          other_action.push_to_git_remote(force: true)
+          Fastlane::Actions::PushToGitRemoteAction.run(force: true)
           
 
           git_remote=`git remote get-url origin`.gsub!("git@github.com:", "https://github.com/").gsub!(".git", "").chomp
@@ -63,14 +63,7 @@ module Fastlane
       end
 
       def self.available_options
-        [
-           FastlaneCore::ConfigItem.new(key: :base_branch,
-                                   env_name: "FL_CONTR_BASE_BRANCH",
-                                description: "Reset to this Branch",
-                                   optional: false,
-                              default_value: "origin/master",
-                                       type: String)
-        ]
+           Contributor::Options.available_options
       end
 
       def self.is_supported?(platform)
