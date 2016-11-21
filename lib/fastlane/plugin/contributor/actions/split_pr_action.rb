@@ -35,7 +35,7 @@ module Fastlane
           body = "This is #{idx}/#{seperated_prs.length}"
           `open "#{git_remote}/compare/#{m_branch}?expand=1&body=#{URI.escape(body)}&title=#{URI.escape(subject)}"`
         end
-        
+        `git checkout #{current_branch}`
         `git merge --ff #{created_branches.join(" ")}`
         
       end
