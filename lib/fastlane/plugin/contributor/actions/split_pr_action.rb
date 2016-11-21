@@ -34,9 +34,10 @@ module Fastlane
           subject = "[#{m}] New PR #{idx}/#{seperated_prs.length}"
           body = "This is #{idx}/#{seperated_prs.length}"
           `open "#{git_remote}/compare/#{m_branch}?expand=1&body=#{URI.escape(body)}&title=#{URI.escape(subject)}"`
+          do_command("git checkout #{current_branch}")
+          do_command("git reset --hard #{current_branch}")
         end
-        `git checkout #{current_branch}`
-        `git reset --hard #{current_branch}`
+        
         
       end
       def self.do_command(cmd)
