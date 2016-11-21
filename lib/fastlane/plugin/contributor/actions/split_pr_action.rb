@@ -16,7 +16,7 @@ module Fastlane
           seperated_prs << mod
         end
         
-        current_branch=Fastlane::Actions::GitBranchAction.run
+        current_branch=Fastlane::Actions::GitBranchAction.run({})
         
         created_branches = []
         seperated_prs.each do | m, idx |
