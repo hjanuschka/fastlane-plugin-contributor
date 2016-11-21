@@ -3,7 +3,7 @@ module Fastlane
     class SplitPrAction < Action
       def self.run(params)
         # ensure git status is clean
-        Fastlane::Actions::EnsureGitStatusCleanAction.new.run({})
+        Fastlane::Actions::EnsureGitStatusCleanAction.run({})
         UI.important("Resetting to #{params[:base_branch]}")
         do_command("git reset #{params[:base_branch]}")
 
@@ -16,7 +16,7 @@ module Fastlane
           seperated_prs << mod
         end
         
-        current_branch=Fastlane::Actions::GitBranchAction.new.run({})
+        current_branch=Fastlane::Actions::GitBranchAction.run({})
         
         created_branches = []
         seperated_prs.each do | m, idx |
@@ -25,9 +25,9 @@ module Fastlane
           do_command("git checkout -B #{m_branch}")
           # unstage all
           do_command("git reset")
-          Fastlane::Actions::GitAddAction.new.run(path: "#{File.expand_path(m)}/")
+          Fastlane::Actions::GitAddAction.run(path: "#{File.expand_path(m)}/")
           do_command("git commit -m 'Split PR commit'")
-          Fastlane::Actions::PushToGitRemoteAction.new.run(force: true)
+          Fastlane::Actions::PushToGitRemoteAction.run({force: true, remote: "origin"})
           
 
           git_remote=`git remote get-url origin`.gsub!("git@github.com:", "https://github.com/").gsub!(".git", "").chomp
