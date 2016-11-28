@@ -17,7 +17,20 @@ module Fastlane
                                                            description: "Action",
                                                               optional: false,
                                                          default_value: "split_pr",
-                                                                  type: String)                                      
+                                                                  type: String),
+                                                                  FastlaneCore::ConfigItem.new(key: :base_repo,
+                                                                                                                      env_name: "FL_CONTRIB_BASE_REPO",
+                                                                                                                   description: "BASE_REPO",
+                                                                                                                      optional: false,
+                                                                                                                      default_value: "fastlane"
+                                                                                                                      is_string: true,
+                                                                                                                          type: String)  
+                                                                  FastlaneCore::ConfigItem.new(key: :username,
+                                                                                                                      env_name: "FL_CONTRIB_USER",
+                                                                                                                   description: "Contrib Username",
+                                                                                                                      optional: false,
+                                                                                                                      is_string: true,
+                                                                                                                          type: String)  
           
         ]
       end

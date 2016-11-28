@@ -3,7 +3,21 @@ module Fastlane
     class SplitPrAction < Action
       def self.run(params)
         # ensure git status is clean
-        Fastlane::Actions::EnsureGitStatusCleanAction.run({})
+        repo_clean = `git status --porcelain`.empty?
+        if repo_clean
+          UI.success('Git status is clean, all good! 💪')
+          Actions.lane_context[SharedValues::GIT_REPO_WAS_CLEAN_ON_START] = true
+        else
+          UI.user_error!("Git repository is dirty! Please ensure the repo is in a clean state by commiting/stashing/discarding all changes first.")
+        end
+        
+        fork_remote="contributor-#{params[:username]}"
+        
+        remote_exists=`git remote get-url #{fork_remote}`.empty?
+        unless remote_exists
+          do_command("git remote add #{fork_remote} https://github.com/#{params[:username]}/#{params[:base_repo]}.git")
+        end
+        
         UI.important("Resetting to #{params[:base_branch]}")
         do_command("git reset #{params[:base_branch]}")
 
@@ -16,7 +30,7 @@ module Fastlane
           seperated_prs << mod
         end
         
-        current_branch=Fastlane::Actions::GitBranchAction.run({})
+        current_branch=`git symbolic-ref HEAD --short 2>/dev/null`.strip
         
         created_branches = []
         seperated_prs.each do | m, idx |
@@ -25,15 +39,13 @@ module Fastlane
           do_command("git checkout -B #{m_branch}")
           # unstage all
           do_command("git reset")
-          Fastlane::Actions::GitAddAction.run(path: "#{File.expand_path(m)}/")
+          do_command("git add #{File.expand_path(m)}/")
           do_command("git commit -m 'Split PR commit'")
-          Fastlane::Actions::PushToGitRemoteAction.run({force: true, remote: "origin"})
-          
+          do_command("git push -u #{fork_remote}")
 
-          git_remote=`git remote get-url origin`.gsub!("git@github.com:", "https://github.com/").gsub!(".git", "").chomp
+          
           subject = "[#{m}] New PR #{idx}/#{seperated_prs.length}"
           body = "This is #{idx}/#{seperated_prs.length}"
-          do_command("open '#{git_remote}/compare/#{m_branch}?expand=1&body=#{URI.escape(body)}&title=#{URI.escape(subject)}'")
           do_command("git checkout #{current_branch}")
           do_command("git reset --hard #{current_branch}")
         end
