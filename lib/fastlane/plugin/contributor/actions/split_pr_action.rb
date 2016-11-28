@@ -12,9 +12,8 @@ module Fastlane
         
         fork_remote="contributor-#{params[:username]}"
         
-        remote_exists=`git remote get-url #{fork_remote}`.empty?
-        puts remote_exists.inspect
-        unless remote_exists
+        remote_missing=`git remote get-url #{fork_remote}`.empty?
+        if remote_missing
           do_command("git remote add #{fork_remote} https://github.com/#{params[:username]}/#{params[:base_repo]}.git")
         end
         
