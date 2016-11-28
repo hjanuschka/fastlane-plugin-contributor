@@ -1,3 +1,4 @@
+require "oktokit"
 module Fastlane
   module Helper
     class ContributorHelper

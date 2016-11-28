@@ -1,4 +1,3 @@
-require "oktocat"
 module Fastlane
   module Actions
     class SplitPrAction < Action
