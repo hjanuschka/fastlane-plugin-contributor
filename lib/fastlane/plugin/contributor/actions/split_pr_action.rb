@@ -14,7 +14,7 @@ module Fastlane
         
         remote_missing=`git remote get-url #{fork_remote}`.empty?
         if remote_missing
-          do_command("git remote add #{fork_remote} https://github.com/#{params[:username]}/#{params[:base_repo]}.git")
+          do_command("git remote add #{fork_remote} git@github.com:#{params[:username]}/#{params[:base_repo]}.git")
         end
         
         UI.important("Resetting to #{params[:base_branch]}")
