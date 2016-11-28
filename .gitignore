@@ -1,4 +1,5 @@
 *.gem
+contrib.env
 Gemfile.lock
 
 ## Documentation cache and generated files:

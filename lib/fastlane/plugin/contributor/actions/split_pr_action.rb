@@ -46,6 +46,11 @@ module Fastlane
           
           subject = "[#{m}] New PR #{idx}/#{seperated_prs.length}"
           body = "This is #{idx}/#{seperated_prs.length}"
+          
+          # Create PR
+          
+          
+          
           do_command("git checkout #{current_branch}")
           do_command("git reset --hard #{current_branch}")
         end
