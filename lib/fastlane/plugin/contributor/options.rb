@@ -22,9 +22,9 @@ module Fastlane
                                                                                                                       env_name: "FL_CONTRIB_BASE_REPO",
                                                                                                                    description: "BASE_REPO",
                                                                                                                       optional: false,
-                                                                                                                      default_value: "fastlane"
+                                                                                                                      default_value: "fastlane",
                                                                                                                       is_string: true,
-                                                                                                                          type: String)  
+                                                                                                                          type: String),  
                                                                   FastlaneCore::ConfigItem.new(key: :username,
                                                                                                                       env_name: "FL_CONTRIB_USER",
                                                                                                                    description: "Contrib Username",
